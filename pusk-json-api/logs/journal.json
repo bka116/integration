@@ -1,0 +1,35 @@
+[
+  {
+    "timestamp": "2025-07-14T13:12:49.992Z",
+    "file": "participant_1752498769988.xml",
+    "participant": {
+      "fullName": "Иванов Иван Иванович",
+      "birthDate": "1990-05-01",
+      "role": "Контролер",
+      "email": "ivanov@example.com",
+      "phone": "+79991234567"
+    }
+  },
+  {
+    "timestamp": "2025-07-14T13:16:00.033Z",
+    "file": "participant_1752498960031.xml",
+    "participant": {
+      "fullName": "Петров Пётр Иванович",
+      "birthDate": "1990-05-01",
+      "role": "Контролер",
+      "email": "ivanov@example.com",
+      "phone": "+79991234567"
+    }
+  },
+  {
+    "timestamp": "2025-07-14T14:18:15.906Z",
+    "file": "participant_1752502695904.xml",
+    "participant": {
+      "fullName": "Башкатов",
+      "birthDate": "1997-11-11",
+      "role": "Инженер",
+      "email": "test2221@gmail.com",
+      "phone": "+79312513113"
+    }
+  }
+]
