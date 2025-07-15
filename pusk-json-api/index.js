@@ -80,3 +80,24 @@ app.post('/api/participant', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Сервер запущен: http://localhost:${PORT}`);
 });
+
+const logPath = path.join(__dirname, 'logs', 'journal.json');
+
+app.get('/api/journal', (req, res) => {
+  if (!fs.existsSync(logPath)) return res.json([]);
+  const logs = JSON.parse(fs.readFileSync(logPath));
+  res.json(logs);
+});
+
+const storageDir = path.join(__dirname, 'storage');
+
+app.get('/api/xml/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(storageDir, filename);
+
+  if (fs.existsSync(filePath)) {
+    res.download(filePath); // отправляет как вложение
+  } else {
+    res.status(404).json({ error: 'XML-файл не найден' });
+  }
+});
