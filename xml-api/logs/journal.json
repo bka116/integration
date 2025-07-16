@@ -1,0 +1,68 @@
+[
+  {
+    "timestamp": "2025-07-16T12:20:19.205Z",
+    "file": "received_1752668419197.xml",
+    "participant": {
+      "FullName": "Тестов Тест",
+      "BirthDate": "1990-01-01",
+      "Role": "Контролер",
+      "Email": "test@example.com",
+      "Phone": "+79990001122"
+    }
+  },
+  {
+    "timestamp": "2025-07-16T12:27:17.672Z",
+    "file": "received_1752668837668.xml",
+    "participant": {
+      "FullName": "Тестов Тест 2 ",
+      "BirthDate": "1990-01-01",
+      "Role": "Контролер",
+      "Email": "test@example.com",
+      "Phone": "+79990001122"
+    }
+  },
+  {
+    "timestamp": "2025-07-16T12:47:14.277Z",
+    "file": "received_1752670034270.xml",
+    "participant": {
+      "FullName": "Тестов Тест 3 ",
+      "BirthDate": "1990-01-01",
+      "Role": "Контролер",
+      "Email": "test@example.com",
+      "Phone": "+79990001122"
+    }
+  },
+  {
+    "timestamp": "2025-07-16T12:48:15.297Z",
+    "file": "received_1752670095290.xml",
+    "participant": {
+      "FullName": "Тестов Тест 4 ",
+      "BirthDate": "1990-01-01",
+      "Role": "Контролер",
+      "Email": "test@example.com",
+      "Phone": "+79990001122"
+    }
+  },
+  {
+    "timestamp": "2025-07-16T12:49:38.661Z",
+    "file": "received_1752670178656.xml",
+    "participant": {
+      "FullName": "Тестов Тест 5 ",
+      "BirthDate": "1990-01-01",
+      "Role": "Контролер",
+      "Email": "test@example.com",
+      "Phone": "+79990001122"
+    }
+  },
+  {
+    "timestamp": "2025-07-16T12:55:47.838Z",
+    "file": "received_1752670547832.xml",
+    "participant": {
+      "FullName": "Тестов Тест 7 ",
+      "BirthDate": "1990-01-01",
+      "Role": "Контролер",
+      "Email": "test@example.com",
+      "Phone": "+79990001122"
+    }
+  }
+]
