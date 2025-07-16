@@ -7,6 +7,7 @@ const path = require('path');
 const libxmljs = require('libxmljs2');
 const { parseStringPromise } = require('xml2js');
 const axios = require('axios');
+const pool = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 4001;
@@ -55,6 +56,23 @@ app.post('/api/xml', async (req, res) => {
   try {
     const json = await parseStringPromise(xml, { explicitArray: false });
     participant = json.Participant;
+    try {
+  await pool.query(
+    `INSERT INTO xml_participants (full_name, birth_date, role, email, phone, xml_file_name)
+     VALUES ($1, $2, $3, $4, $5, $6)`,
+    [
+      participant.FullName,
+      participant.BirthDate,
+      participant.Role,
+      participant.Email,
+      participant.Phone,
+      fileName
+    ]
+  );
+} catch (dbErr) {
+  console.error('❌ Ошибка при сохранении в БД XML-сервиса:', dbErr.message);
+}
+
     console.log('📦 Данные из XML:', participant);
 
   } catch (e) {

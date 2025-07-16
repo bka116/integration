@@ -1,11 +1,11 @@
 import React from 'react';
-import XmlUploader from './components/XmlUploader';
+import XmlFormEditor from './components/XmlFormEditor';
 import XmlJournal from './components/XmlJournal';
 
 function App() {
   return (
     <div>
-      <XmlUploader />
+      <XmlFormEditor />
       <hr />
       <XmlJournal />
     </div>
