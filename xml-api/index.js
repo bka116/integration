@@ -133,3 +133,17 @@ fs.writeFileSync(logsPath, JSON.stringify(logs, null, 2));
 app.listen(PORT, () => {
   console.log(`✅ XML API слушает на http://localhost:${PORT}`);
 });
+
+app.get('/api/participants', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT full_name, birth_date, role, email, phone, xml_file_name, created_at
+       FROM xml_participants
+       ORDER BY created_at DESC`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Ошибка при получении участников:', err.message);
+    res.status(500).json({ error: 'Ошибка при получении участников' });
+  }
+});

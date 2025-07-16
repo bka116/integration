@@ -9,4 +9,5 @@ export const sendXml = (xmlString) =>
     headers: { 'Content-Type': 'application/xml' },
   });
 
-export const fetchJournal = () => API.get('/journal');
+export const fetchParticipants = () => API.get('/participants');
+
