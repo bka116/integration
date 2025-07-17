@@ -12,6 +12,9 @@ export default function ParticipantForm() {
 
   const [status, setStatus] = useState('');
   const [xml, setXml] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   // отображаемые подписи для каждого поля
   const fieldLabels = {
@@ -27,18 +30,32 @@ export default function ParticipantForm() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus('⏳ Отправка...');
-    try {
-      const res = await axios.post('http://localhost:3001/api/participant', formData);
-      setStatus('✅ Участник успешно создан!');
-      setXml(res.data.xmlPreview);
-    } catch (err) {
-      const errorText = err.response?.data?.error || 'Ошибка отправки';
-      setStatus('❌ ' + errorText);
-      setXml('');
-    }
-  };
+  e.preventDefault();
+
+  if (loading) return; // не допускаем двойной клик
+
+  setLoading(true);
+  setError('');
+  setSuccess('');
+
+  try {
+    const res = await axios.post('http://localhost:3001/api/participant', formData);
+    setSuccess('✅ Участник создан');
+    setFormData({
+  fullName: '',
+  birthDate: '',
+  role: '',
+  email: '',
+  phone: ''
+});
+ // очистить форму, если нужно
+  } catch (err) {
+    setError(err.response?.data?.error || 'Ошибка отправки');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 500, margin: '0 auto' }}>
@@ -61,16 +78,23 @@ export default function ParticipantForm() {
         </div>
       ))}
 
-      <button type="submit" style={{
-        padding: '10px 20px',
-        background: '#2566E8',
-        color: 'white',
-        border: 'none',
-        borderRadius: 4,
-        cursor: 'pointer'
-      }}>
-        Отправить
-      </button>
+      <button
+  type="submit"
+  disabled={loading}
+  style={{
+    padding: '10px 20px',
+    background: loading ? '#aaa' : '#2566E8',
+    color: 'white',
+    border: 'none',
+    borderRadius: 4,
+    cursor: loading ? 'not-allowed' : 'pointer'
+  }}
+>
+  {loading ? 'Отправка...' : 'Отправить'}
+</button>
+
+{error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
+{success && <p style={{ color: 'green', marginTop: '1rem' }}>{success}</p>}
 
       {status && <p style={{ marginTop: '1rem' }}>{status}</p>}
 

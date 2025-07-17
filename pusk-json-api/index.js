@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
-
+const axios = require('axios');
 const pool = require('./db');
 const convertToXML = require('./utils/xmlBuilder');
 const validateXML = require('./validators/xmlValidator');
@@ -51,6 +51,38 @@ app.post('/api/participant', async (req, res) => {
     const fileName = `participant_${Date.now()}.xml`;
     const xmlPath = path.join(__dirname, 'storage', fileName);
     fs.writeFileSync(xmlPath, xml);
+   
+    // Отправляем сохранённый XML в xml-api
+   const forwardLogPath = path.join(__dirname, 'logs', 'forwarded.json');
+
+
+// 1. Загружаем лог отправленных XML
+const forwarded = fs.existsSync(forwardLogPath) ? JSON.parse(fs.readFileSync(forwardLogPath)) : [];
+
+if (forwarded.find(entry => entry.file === fileName)) {
+  console.log(`⚠️ XML-файл ${fileName} уже отправлен ранее. Пропускаем.`);
+} else {
+  try {
+    const savedXml = fs.readFileSync(xmlPath, 'utf-8');
+
+    await axios.post('http://localhost:4001/api/xml', savedXml, {
+      headers: { 'Content-Type': 'application/xml' }
+    });
+
+    console.log(`✅ XML-файл ${fileName} успешно отправлен в XML-сервис`);
+
+    // 2. Добавляем в лог
+    forwarded.push({
+      file: fileName,
+      sentAt: new Date().toISOString()
+    });
+
+    fs.writeFileSync(forwardLogPath, JSON.stringify(forwarded, null, 2));
+  } catch (err) {
+    console.error('❌ Ошибка при пересылке XML в XML-сервис:', err.message);
+  }
+}
+
 
     // 5. Добавляем запись в журнал
     const logPath = path.join(__dirname, 'logs', 'journal.json');
