@@ -11,7 +11,6 @@ const pool = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 4001;
-
 app.use(cors());
 app.use(bodyParser.text({ type: 'application/xml' }));
 
@@ -26,18 +25,14 @@ function validateXML(xmlString) {
   const xsd = fs.readFileSync(xsdPath, 'utf-8');
   const xsdDoc = libxmljs.parseXml(xsd);
   const xmlDoc = libxmljs.parseXml(xmlString);
-  const isValid = xmlDoc.validate(xsdDoc);
   return {
-    valid: isValid,
+    valid: xmlDoc.validate(xsdDoc),
     errors: xmlDoc.validationErrors
   };
 }
 
-// POST /api/xml — принимает XML от другой системы
 app.post('/api/xml', async (req, res) => {
   const xml = req.body;
-
-  // 1. Валидация по XSD
   const result = validateXML(xml);
   if (!result.valid) {
     return res.status(400).json({
@@ -46,70 +41,57 @@ app.post('/api/xml', async (req, res) => {
     });
   }
 
-  // 2. Сохраняем XML
   const fileName = `received_${Date.now()}.xml`;
   const filePath = path.join(receivedDir, fileName);
   fs.writeFileSync(filePath, xml);
 
-  // 3. Парсим XML в JSON
   let participant;
   try {
     const json = await parseStringPromise(xml, { explicitArray: false });
     participant = json.Participant;
-    try {
-  await pool.query(
-    `INSERT INTO xml_participants (full_name, birth_date, role, email, phone, xml_file_name)
-     VALUES ($1, $2, $3, $4, $5, $6)`,
-    [
-      participant.FullName,
-      participant.BirthDate,
-      participant.Role,
-      participant.Email,
-      participant.Phone,
-      fileName
-    ]
-  );
-} catch (dbErr) {
-  console.error('❌ Ошибка при сохранении в БД XML-сервиса:', dbErr.message);
-}
-
-    console.log('📦 Данные из XML:', participant);
-
-  } catch (e) {
+  } catch {
     return res.status(400).json({ error: 'Не удалось разобрать XML' });
   }
 
-  // 4. Логируем
-  let logs = [];
-try {
-  if (fs.existsSync(logsPath)) {
-    const raw = fs.readFileSync(logsPath, 'utf-8').trim();
-    logs = raw ? JSON.parse(raw) : [];
+  try {
+    await pool.query(
+      `INSERT INTO xml_participants (full_name, birth_date, role, email, phone, xml_file_name)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [
+        participant.FullName,
+        participant.BirthDate,
+        participant.Role,
+        participant.Email,
+        participant.Phone,
+        fileName
+      ]
+    );
+  } catch (e) {
+    console.error('❌ Ошибка при сохранении в БД XML-сервиса:', e.message);
   }
-} catch (e) {
-  console.warn('⚠️ journal.json повреждён, создаю заново.');
-  logs = [];
-}
 
-// добавляем новую запись
-logs.push({
-  timestamp: new Date().toISOString(),
-  file: fileName,
-  participant
-});
+  let logs = [];
+  if (fs.existsSync(logsPath)) {
+    const content = fs.readFileSync(logsPath, 'utf-8').trim();
+    if (content) logs = JSON.parse(content);
+  }
 
-// сохраняем журнал
-fs.writeFileSync(logsPath, JSON.stringify(logs, null, 2));
+  logs.push({
+    timestamp: new Date().toISOString(),
+    file: fileName,
+    participant
+  });
+  fs.writeFileSync(logsPath, JSON.stringify(logs, null, 2));
 
-
-  // 5. [опционально] — Отправляем в JSON-сервис (ПУСК)
+  // Пересылаем в JSON-сервис (только один раз)
   try {
     const jsonPayload = {
       fullName: participant.FullName,
       birthDate: participant.BirthDate,
       role: participant.Role,
       email: participant.Email,
-      phone: participant.Phone
+      phone: participant.Phone,
+      source: 'xml' // ✅ помечаем источник
     };
 
     const forwardRes = await axios.post(
@@ -118,32 +100,30 @@ fs.writeFileSync(logsPath, JSON.stringify(logs, null, 2));
     );
 
     return res.status(201).json({
-      message: 'XML принят, провалидирован и переслан в JSON-сервис',
+      message: 'XML принят и переслан в JSON',
       responseFromPusk: forwardRes.data
     });
 
   } catch (err) {
     return res.status(500).json({
-      error: 'XML принят, но не удалось переслать в JSON-сервис',
+      error: 'XML сохранён, но не удалось переслать в JSON-сервис',
       details: err.message
     });
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`✅ XML API слушает на http://localhost:${PORT}`);
 });
 
 app.get('/api/participants', async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT full_name, birth_date, role, email, phone, xml_file_name, created_at
-       FROM xml_participants
-       ORDER BY created_at DESC`
+       FROM xml_participants ORDER BY created_at DESC`
     );
     res.json(result.rows);
   } catch (err) {
-    console.error('❌ Ошибка при получении участников:', err.message);
     res.status(500).json({ error: 'Ошибка при получении участников' });
   }
+});
+
+app.listen(PORT, () => {
+  console.log(`✅ XML API слушает на http://localhost:${PORT}`);
 });
