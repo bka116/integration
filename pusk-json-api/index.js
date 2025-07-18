@@ -21,7 +21,8 @@ app.post('/api/participant', async (req, res) => {
     return res.status(400).json({ error: 'Все поля обязательны' });
   }
 
-  const xml = convertToXML({ fullName, birthDate, role, email, phone });
+  const xml = convertToXML({ fullName, birthDate, role, email, phone, source });
+
   const validation = validateXML(xml);
   if (!validation.valid) {
     return res.status(400).json({
@@ -67,7 +68,11 @@ app.post('/api/participant', async (req, res) => {
         fs.writeFileSync(forwardLogPath, JSON.stringify(forwarded, null, 2));
         console.log(`✅ XML-файл ${fileName} переслан в XML-сервис`);
       } catch (err) {
-        console.error('❌ Ошибка при пересылке XML в XML-сервис:', err.message);
+        if (err.response) {
+          console.error('❌ XML-сервис вернул ошибку:', err.response.status, err.response.data);
+        } else {
+          console.error('❌ Ошибка при пересылке XML в XML-сервис:', err.message);
+        }
       }
     }
   } else {
@@ -88,7 +93,7 @@ app.post('/api/participant', async (req, res) => {
   });
   fs.writeFileSync(journalPath, JSON.stringify(logs, null, 2));
 
-  res.status(201).json({
+  return res.status(201).json({
     message: 'Участник создан, XML валиден',
     xmlPreview: xml,
     savedFile: fileName

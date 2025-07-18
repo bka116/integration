@@ -31,6 +31,7 @@ function validateXML(xmlString) {
   };
 }
 
+// POST /api/xml
 app.post('/api/xml', async (req, res) => {
   const xml = req.body;
   const result = validateXML(xml);
@@ -68,6 +69,10 @@ app.post('/api/xml', async (req, res) => {
     );
   } catch (e) {
     console.error('❌ Ошибка при сохранении в БД XML-сервиса:', e.message);
+    return res.status(500).json({
+      error: 'Ошибка при сохранении в БД XML-сервиса',
+      details: e.message
+    });
   }
 
   let logs = [];
@@ -83,35 +88,43 @@ app.post('/api/xml', async (req, res) => {
   });
   fs.writeFileSync(logsPath, JSON.stringify(logs, null, 2));
 
-  // Пересылаем в JSON-сервис (только один раз)
-  try {
-    const jsonPayload = {
-      fullName: participant.FullName,
-      birthDate: participant.BirthDate,
-      role: participant.Role,
-      email: participant.Email,
-      phone: participant.Phone,
-      source: 'xml' // ✅ помечаем источник
-    };
+  // Пересылаем в JSON-сервис (если источник не json)
+  if (participant.Source !== 'json') {
+    try {
+      const jsonPayload = {
+        fullName: participant.FullName,
+        birthDate: participant.BirthDate,
+        role: participant.Role,
+        email: participant.Email,
+        phone: participant.Phone,
+        source: 'xml'
+      };
 
-    const forwardRes = await axios.post(
-      'http://localhost:3001/api/participant',
-      jsonPayload
-    );
+      const forwardRes = await axios.post(
+        'http://localhost:3001/api/participant',
+        jsonPayload
+      );
 
+      return res.status(201).json({
+        message: 'XML принят и переслан в JSON',
+        responseFromPusk: forwardRes.data
+      });
+
+    } catch (err) {
+      return res.status(500).json({
+        error: 'XML сохранён, но не удалось переслать в JSON-сервис',
+        details: err.message
+      });
+    }
+  } else {
+    console.log('📨 Участник пришёл из JSON, не пересылаем обратно.');
     return res.status(201).json({
-      message: 'XML принят и переслан в JSON',
-      responseFromPusk: forwardRes.data
-    });
-
-  } catch (err) {
-    return res.status(500).json({
-      error: 'XML сохранён, но не удалось переслать в JSON-сервис',
-      details: err.message
+      message: 'XML принят и сохранён (source: json)'
     });
   }
 });
 
+// GET /api/participants
 app.get('/api/participants', async (req, res) => {
   try {
     const result = await pool.query(

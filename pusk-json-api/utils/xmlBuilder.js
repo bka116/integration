@@ -8,6 +8,7 @@ function convertToXML(participant) {
       .ele('Role').txt(participant.role).up()
       .ele('Email').txt(participant.email).up()
       .ele('Phone').txt(participant.phone).up()
+      .ele('Source').txt(participant.source || 'json').up() // 👈 добавляем тег Source
     .up();
 
   return doc.end({ prettyPrint: true });
