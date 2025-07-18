@@ -31,9 +31,10 @@ function validateXML(xmlString) {
   };
 }
 
-// POST /api/xml
 app.post('/api/xml', async (req, res) => {
   const xml = req.body;
+
+  // 1. Валидация XSD
   const result = validateXML(xml);
   if (!result.valid) {
     return res.status(400).json({
@@ -42,10 +43,12 @@ app.post('/api/xml', async (req, res) => {
     });
   }
 
+  // 2. Сохраняем XML-файл
   const fileName = `received_${Date.now()}.xml`;
   const filePath = path.join(receivedDir, fileName);
   fs.writeFileSync(filePath, xml);
 
+  // 3. Преобразуем в JSON
   let participant;
   try {
     const json = await parseStringPromise(xml, { explicitArray: false });
@@ -54,27 +57,33 @@ app.post('/api/xml', async (req, res) => {
     return res.status(400).json({ error: 'Не удалось разобрать XML' });
   }
 
-  try {
-    await pool.query(
-      `INSERT INTO xml_participants (full_name, birth_date, role, email, phone, xml_file_name)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
-      [
-        participant.FullName,
-        participant.BirthDate,
-        participant.Role,
-        participant.Email,
-        participant.Phone,
-        fileName
-      ]
-    );
-  } catch (e) {
-    console.error('❌ Ошибка при сохранении в БД XML-сервиса:', e.message);
-    return res.status(500).json({
-      error: 'Ошибка при сохранении в БД XML-сервиса',
-      details: e.message
-    });
+  // 4. Если участник не пришёл из JSON — сохраняем в БД
+  if (participant.Source !== 'json') {
+    try {
+      await pool.query(
+        `INSERT INTO xml_participants (full_name, birth_date, role, email, phone, xml_file_name)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          participant.FullName,
+          participant.BirthDate,
+          participant.Role,
+          participant.Email,
+          participant.Phone,
+          fileName
+        ]
+      );
+    } catch (e) {
+      console.error('❌ Ошибка при сохранении в БД XML-сервиса:', e.message);
+      return res.status(500).json({
+        error: 'Ошибка при сохранении в БД XML-сервиса',
+        details: e.message
+      });
+    }
+  } else {
+    console.log('📨 Участник пришёл из JSON. Пропускаем запись в БД XML.');
   }
 
+  // 5. Добавляем в журнал
   let logs = [];
   if (fs.existsSync(logsPath)) {
     const content = fs.readFileSync(logsPath, 'utf-8').trim();
@@ -88,7 +97,7 @@ app.post('/api/xml', async (req, res) => {
   });
   fs.writeFileSync(logsPath, JSON.stringify(logs, null, 2));
 
-  // Пересылаем в JSON-сервис (если источник не json)
+  // 6. Пересылаем в JSON-сервис (если Source !== json)
   if (participant.Source !== 'json') {
     try {
       const jsonPayload = {
@@ -117,14 +126,12 @@ app.post('/api/xml', async (req, res) => {
       });
     }
   } else {
-    console.log('📨 Участник пришёл из JSON, не пересылаем обратно.');
     return res.status(201).json({
-      message: 'XML принят и сохранён (source: json)'
+      message: 'XML принят от JSON, не пересылаем обратно.'
     });
   }
 });
 
-// GET /api/participants
 app.get('/api/participants', async (req, res) => {
   try {
     const result = await pool.query(
