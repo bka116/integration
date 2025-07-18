@@ -187,5 +187,17 @@
       "Email": "123deis+1@live.ru",
       "Phone": "+79312513123"
     }
+  },
+  {
+    "timestamp": "2025-07-18T13:35:25.587Z",
+    "file": "received_1752845725582.xml",
+    "participant": {
+      "FullName": "Башкатов",
+      "BirthDate": "1333-03-12",
+      "Role": "Инженер",
+      "Email": "batkov.k312@osmocode.ru",
+      "Phone": "89315411242",
+      "Source": "json"
+    }
   }
 ]
