@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<Participant>
-  <FullName>Иванов Иван</FullName>
-  <BirthDate>1995-12-15</BirthDate>
-  <Role>Инженер</Role>
-  <Email>deis+2107@live.ru</Email>
-  <Phone>+79312513199</Phone>
-  <Source>json</Source>
-</Participant>
