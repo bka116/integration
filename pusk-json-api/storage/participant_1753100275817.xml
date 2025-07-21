@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Participant>
+  <FullName>Семёнов Аркадий Иванович </FullName>
+  <BirthDate>1992-12-12</BirthDate>
+  <Role>Инженер</Role>
+  <Email>deis+1231@live.ru</Email>
+  <Phone>+79101234999</Phone>
+  <Source>json</Source>
+</Participant>

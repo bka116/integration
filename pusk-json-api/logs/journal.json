@@ -1,167 +1,35 @@
 [
   {
-    "timestamp": "2025-07-18T11:25:54.869Z",
-    "file": "participant_1752837954634.xml",
+    "timestamp": "2025-07-21T11:16:58.195Z",
+    "file": "participant_1753096618147.xml",
     "participant": {
-      "fullName": "Иванов Иван Иванович",
-      "birthDate": "2024-12-18",
+      "fullName": "Иванов Иван",
+      "birthDate": "1995-12-15",
       "role": "Инженер",
-      "email": "test1@gmail.com",
-      "phone": "+79312513110"
+      "email": "deis+2107@live.ru",
+      "phone": "+79312513199"
     }
   },
   {
-    "timestamp": "2025-07-18T11:30:26.337Z",
-    "file": "participant_1752838226335.xml",
+    "timestamp": "2025-07-21T11:37:31.849Z",
+    "file": "participant_1753097851846.xml",
     "participant": {
-      "fullName": "Семёнов Семён Иванович",
-      "birthDate": "2025-07-19",
+      "fullName": "Петров Петр ",
+      "birthDate": "1998-12-12",
       "role": "Инженер",
-      "email": "test11@gmail.com",
-      "phone": "+79312513110"
+      "email": "test112@gmail.com",
+      "phone": "+79312513999"
     }
   },
   {
-    "timestamp": "2025-07-18T11:35:21.430Z",
-    "file": "participant_1752838521319.xml",
+    "timestamp": "2025-07-21T12:17:55.926Z",
+    "file": "participant_1753100275817.xml",
     "participant": {
-      "fullName": "Петров Валентин ",
-      "birthDate": "2025-07-15",
+      "fullName": "Семёнов Аркадий Иванович ",
+      "birthDate": "1992-12-12",
       "role": "Инженер",
-      "email": "test12@gmail.com",
-      "phone": "+79312513110"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T11:36:13.934Z",
-    "file": "participant_1752838573818.xml",
-    "participant": {
-      "fullName": "Игнатьев Валерий ",
-      "birthDate": "2025-07-28",
-      "role": "Инженер",
-      "email": "test13@gmail.com",
-      "phone": "+79312513111"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T11:47:25.425Z",
-    "file": "participant_1752839245312.xml",
-    "participant": {
-      "fullName": "Никитин Никита",
-      "birthDate": "2025-07-04",
-      "role": "Инженер",
-      "email": "deis+111@live.ru",
-      "phone": "89315411245"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T11:48:03.450Z",
-    "file": "participant_1752839283328.xml",
-    "participant": {
-      "fullName": "Иванов Иван Иванович",
-      "birthDate": "2025-07-04",
-      "role": "Инженер",
-      "email": "deis+1@live.ru",
-      "phone": "+79312513110"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T11:48:40.912Z",
-    "file": "participant_1752839320910.xml",
-    "participant": {
-      "fullName": "Петров Валентин ",
-      "birthDate": "2025-07-04",
-      "role": "Инженер",
-      "email": "deis+1111@live.ru",
-      "phone": "89315411245"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T11:50:38.210Z",
-    "file": "participant_1752839438102.xml",
-    "participant": {
-      "fullName": "Иванов Иван Иванович",
-      "birthDate": "2025-07-11",
-      "role": "Инженер",
-      "email": "1111deis+1@live.ru",
-      "phone": "+79312513113"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T12:06:19.990Z",
-    "file": "participant_1752840379870.xml",
-    "participant": {
-      "fullName": "Никитин Никита",
-      "birthDate": "2025-07-16",
-      "role": "Инженер",
-      "email": "232323deis+1@live.ru",
-      "phone": "89315411245"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T13:03:36.441Z",
-    "file": "participant_1752843816363.xml",
-    "participant": {
-      "fullName": "michael shum",
-      "birthDate": "2025-07-01",
-      "role": "Инженер",
-      "email": "batkov.k+2201@osmocode.ru",
-      "phone": "+79312513119"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T13:05:50.686Z",
-    "file": "participant_1752843950619.xml",
-    "participant": {
-      "fullName": "Башкатов jonh",
-      "birthDate": "2025-07-01",
-      "role": "Инженер",
-      "email": "de222is+1@live.ru",
-      "phone": "+79312513122"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T13:14:14.376Z",
-    "file": "participant_1752844454374.xml",
-    "participant": {
-      "fullName": "Башкатов Иван Семенович ",
-      "birthDate": "2025-07-01",
-      "role": "Инженер",
-      "email": "te23s3t11@gmail.com",
-      "phone": "+79312513111"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T13:15:50.727Z",
-    "file": "participant_1752844550725.xml",
-    "participant": {
-      "fullName": "Башкатов Иван Семенович ",
-      "birthDate": "2025-07-01",
-      "role": "Инженер",
-      "email": "1111333te23s3t11@gmail.com",
-      "phone": "+79312513111"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T13:33:57.773Z",
-    "file": "participant_1752845637771.xml",
-    "participant": {
-      "fullName": "Тимур Тимур ",
-      "birthDate": "2025-07-01",
-      "role": "Инженер",
-      "email": "123deis+1@live.ru",
-      "phone": "+79312513123"
-    }
-  },
-  {
-    "timestamp": "2025-07-18T13:35:25.597Z",
-    "file": "participant_1752845725555.xml",
-    "participant": {
-      "fullName": "Башкатов",
-      "birthDate": "1333-03-12",
-      "role": "Инженер",
-      "email": "batkov.k312@osmocode.ru",
-      "phone": "89315411242"
+      "email": "deis+1231@live.ru",
+      "phone": "+79101234999"
     }
   }
 ]

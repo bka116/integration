@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<Participant>
-  <FullName>Башкатов</FullName>
-  <BirthDate>1333-03-12</BirthDate>
-  <Role>Инженер</Role>
-  <Email>batkov.k312@osmocode.ru</Email>
-  <Phone>89315411242</Phone>
-  <Source>json</Source>
-</Participant>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Participant>
+  <FullName>Петров Петр </FullName>
+  <BirthDate>1998-12-12</BirthDate>
+  <Role>Инженер</Role>
+  <Email>test112@gmail.com</Email>
+  <Phone>+79312513999</Phone>
+  <Source>xml</Source>
+</Participant>

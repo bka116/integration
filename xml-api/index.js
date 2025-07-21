@@ -11,6 +11,7 @@ const pool = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 4001;
+
 app.use(cors());
 app.use(bodyParser.text({ type: 'application/xml' }));
 
@@ -34,7 +35,7 @@ function validateXML(xmlString) {
 app.post('/api/xml', async (req, res) => {
   const xml = req.body;
 
-  // 1. Валидация XSD
+  // 1. Валидация
   const result = validateXML(xml);
   if (!result.valid) {
     return res.status(400).json({
@@ -57,33 +58,26 @@ app.post('/api/xml', async (req, res) => {
     return res.status(400).json({ error: 'Не удалось разобрать XML' });
   }
 
-  // 4. Если участник не пришёл из JSON — сохраняем в БД
-  if (participant.Source !== 'json') {
-    try {
-      await pool.query(
-        `INSERT INTO xml_participants (full_name, birth_date, role, email, phone, xml_file_name)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [
-          participant.FullName,
-          participant.BirthDate,
-          participant.Role,
-          participant.Email,
-          participant.Phone,
-          fileName
-        ]
-      );
-    } catch (e) {
-      console.error('❌ Ошибка при сохранении в БД XML-сервиса:', e.message);
-      return res.status(500).json({
-        error: 'Ошибка при сохранении в БД XML-сервиса',
-        details: e.message
-      });
-    }
-  } else {
-    console.log('📨 Участник пришёл из JSON. Пропускаем запись в БД XML.');
+  // 4. Сохраняем в БД (всегда, независимо от источника)
+  try {
+    await pool.query(
+      `INSERT INTO xml_participants (full_name, birth_date, role, email, phone, xml_file_name)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (email) DO NOTHING`,
+      [
+        participant.FullName,
+        participant.BirthDate,
+        participant.Role,
+        participant.Email,
+        participant.Phone,
+        fileName
+      ]
+    );
+  } catch (e) {
+    console.error('⚠️ Ошибка при сохранении в БД XML-сервиса:', e.message);
   }
 
-  // 5. Добавляем в журнал
+  // 5. Журнал
   let logs = [];
   if (fs.existsSync(logsPath)) {
     const content = fs.readFileSync(logsPath, 'utf-8').trim();
@@ -97,7 +91,7 @@ app.post('/api/xml', async (req, res) => {
   });
   fs.writeFileSync(logsPath, JSON.stringify(logs, null, 2));
 
-  // 6. Пересылаем в JSON-сервис (если Source !== json)
+  // 6. Пересылка в JSON (если source !== json)
   if (participant.Source !== 'json') {
     try {
       const jsonPayload = {
